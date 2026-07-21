@@ -134,6 +134,16 @@
 2. 用现有 TrollStore 打开
 3. 点安装 / 覆盖安装
 
+## 当前验证结果
+
+- GitHub Actions Run `29855361459`：`enable_local_api=true` 的 API overlay 版 TrollStore 编译成功
+- GitHub Actions Run `29855945988`：在上面的基础上继续验证 `.tipa` 打包成功
+- 产物包含：
+  - `_build/TrollStore.tar`
+  - `_build/TrollStore-local-api.tipa`
+- `TrollStore-local-api.tipa` 大小：`2,462,236` bytes
+- `TrollStore-local-api.tipa` SHA256：`5532685d35306ea5709ac90bf776d59b83703d4233c87f3daceefd72b7905ece`
+
 ## 暂时不做
 
 - 后台常驻
