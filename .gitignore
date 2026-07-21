@@ -1,0 +1,17 @@
+# build outputs
+artifacts/
+dist/
+build/
+out/
+
+# temp
+.tmp/
+.cache/
+
+# editors
+.idea/
+.vscode/
+
+# os
+.DS_Store
+Thumbs.db
