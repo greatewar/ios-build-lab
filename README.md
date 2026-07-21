@@ -54,6 +54,8 @@
 
 默认产物是核心发布包 `TrollStore.tar`。
 
+如果把 `enable_local_api` 打开，会先对 TrollStore 应用一个本仓库维护的 overlay，产出**前台可用、监听 `127.0.0.1:48765` 的本地 HTTP API 版 TrollStore**。
+
 如果把 `build_installers` 打开，还可以额外尝试构建：
 
 - `_build/TrollHelper_arm64e.ipa`
@@ -64,8 +66,10 @@
 - `victim_ipa_url`：一个可公开下载的 `InstallerVictim.ipa`
 - `victim_team_id`：可选；不填时只构建 `TrollHelper_arm64e.ipa`
 
+API 版 TrollStore 第一轮规划见：`docs/TrollStore-API方案.md`
+
 ## 下一步
 
-1. 用真实 victim IPA 验证 installer IPA 构建
-2. 固化 TrollStore 的 macOS 依赖
-3. 评估 release / artifact 自动发布
+1. 跑通 API 版 TrollStore 构建验收
+2. 用真实设备验证 `health/apps/install/uninstall/open`
+3. 再评估是否扩展 installer 线和 release 自动发布

@@ -44,6 +44,15 @@ TrollStore 的 `fastPathSign` 和 `pwnify` 是 macOS 主机工具，不能在 Li
 - `build_installers=true` 且 `victim_ipa_url` 留空
 - 结果按预期在 `Prepare victim IPA inputs` 步骤提前失败，并给出明确报错：`victim_ipa_url is required when build_installers=true`
 
+## API 方向
+
+现在已经把新主线切回 TrollStore API：
+
+- `build-trollstore.yml` 新增 `enable_local_api`
+- 打开后会先应用 `overlays/trollstore-api/` 下的 overlay
+- 第一版只做**前台运行时可用**、监听 `127.0.0.1:48765` 的本地 HTTP API
+- 详细设计见 `docs/TrollStore-API方案.md`
+
 ## 这一轮踩到的坑
 
 - GitHub `macos-14` runner 自带的是 Bash 3.2，不支持 `shopt -s globstar`

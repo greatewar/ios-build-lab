@@ -8,6 +8,11 @@ on:
         required: true
         default: 2.1.1
         type: string
+      enable_local_api:
+        description: Apply the local HTTP API overlay
+        required: true
+        default: false
+        type: boolean
       build_installers:
         description: Also build TrollHelper installer IPAs
         required: true
@@ -49,6 +54,12 @@ jobs:
 
       - name: Prepare TrollStore dependencies
         run: bash build-lab/scripts/prepare-trollstore-macos.sh
+
+      - name: Apply TrollStore local API overlay
+        if: ${{ inputs.enable_local_api }}
+        run: |
+          bash build-lab/scripts/apply-trollstore-api-overlay.sh \
+            "$GITHUB_WORKSPACE/target-source"
 
       - name: Build TrollStore core package
         env:
@@ -130,6 +141,8 @@ jobs:
           mkdir -p artifacts
           git -C target-source rev-parse HEAD > artifacts/trollstore-source-commit.txt
           git -C target-source submodule status > artifacts/trollstore-submodules.txt
+          echo "enable_local_api=${{ inputs.enable_local_api }}" > artifacts/trollstore-build-variant.txt
+          echo "build_installers=${{ inputs.build_installers }}" >> artifacts/trollstore-build-variant.txt
 
       - name: Upload build artifacts
         if: always()
