@@ -60,7 +60,9 @@ fi
 
 for artifact in "${artifacts[@]}"; do
   if [[ -f "$artifact" ]]; then
-    cp --parents "$artifact" "$output_dir/"
+    destination="$output_dir/$artifact"
+    mkdir -p "$(dirname "$destination")"
+    cp "$artifact" "$destination"
     echo "[artifact] $artifact"
   fi
 done
