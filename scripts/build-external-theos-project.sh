@@ -51,8 +51,27 @@ if [[ $build_status -ne 0 ]]; then
   exit "$build_status"
 fi
 
-shopt -s nullglob globstar
-artifacts=( $artifact_glob )
+python_bin="$(command -v python3 || command -v python || true)"
+if [[ -z "$python_bin" ]]; then
+  echo "[error] python is required to expand artifact globs: $artifact_glob" | tee -a "$output_dir/build.log" >&2
+  exit 3
+fi
+
+artifacts=()
+while IFS= read -r artifact; do
+  if [[ -n "$artifact" ]]; then
+    artifacts+=("$artifact")
+  fi
+done < <(
+  "$python_bin" - "$artifact_glob" <<'PY'
+import glob
+import sys
+
+pattern = sys.argv[1]
+for path in sorted(glob.glob(pattern, recursive=True)):
+    print(path)
+PY
+)
 if [[ ${#artifacts[@]} -eq 0 ]]; then
   echo "[error] no artifacts matched: $artifact_glob" | tee -a "$output_dir/build.log" >&2
   exit 3
