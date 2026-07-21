@@ -51,6 +51,7 @@ TrollStore 的 `fastPathSign` 和 `pwnify` 是 macOS 主机工具，不能在 Li
 - `build-trollstore.yml` 新增 `enable_local_api`
 - 打开后会先应用 `overlays/trollstore-api/` 下的 overlay
 - 第一版只做**前台运行时可用**、监听 `127.0.0.1:48765` 的本地 HTTP API
+- 工作流会把 `TrollStore.tar` 再包装成可直接在现有 TrollStore 里安装的 `.tipa`
 - 详细设计见 `docs/TrollStore-API方案.md`
 
 ## 这一轮踩到的坑

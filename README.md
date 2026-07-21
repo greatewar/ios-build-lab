@@ -53,6 +53,10 @@
 在 GitHub Hosted macOS Runner 上构建 TrollStore。默认固定到 tag `2.1.1`，也可以手动指定其他 branch、tag 或 commit。
 
 默认产物是核心发布包 `TrollStore.tar`。
+工作流还会额外把它打包成可安装的 `.tipa`：
+
+- 默认版：`TrollStore.tipa`
+- API 版：`TrollStore-local-api.tipa`
 
 如果把 `enable_local_api` 打开，会先对 TrollStore 应用一个本仓库维护的 overlay，产出**前台可用、监听 `127.0.0.1:48765` 的本地 HTTP API 版 TrollStore**。
 

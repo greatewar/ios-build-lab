@@ -79,6 +79,18 @@ jobs:
             "_build/TrollStore.tar" \
             "$GITHUB_WORKSPACE/artifacts"
 
+      - name: Package installable TrollStore tipa
+        run: |
+          if [[ "${{ inputs.enable_local_api }}" == "true" ]]; then
+            output_name="TrollStore-local-api.tipa"
+          else
+            output_name="TrollStore.tipa"
+          fi
+
+          bash build-lab/scripts/package-trollstore-tipa.sh \
+            "$GITHUB_WORKSPACE/artifacts/_build/TrollStore.tar" \
+            "$GITHUB_WORKSPACE/artifacts/_build/$output_name"
+
       - name: Prepare victim IPA inputs
         if: ${{ inputs.build_installers }}
         env:

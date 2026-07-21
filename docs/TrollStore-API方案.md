@@ -119,6 +119,21 @@
 3. `GET /health` 和 `GET /apps` 能返回 JSON
 4. `POST /install` / `POST /uninstall` 能调用现有 TrollStore 安装卸载能力
 
+## 安装交付形态
+
+为了让用户能直接在现有 TrollStore 上安装，本仓库不会只停留在 `TrollStore.tar`。
+
+工作流还会把产物再包装成：
+
+- 普通版：`TrollStore.tipa`
+- API 版：`TrollStore-local-api.tipa`
+
+这样用户可以直接：
+
+1. 把 `.tipa` 传到手机
+2. 用现有 TrollStore 打开
+3. 点安装 / 覆盖安装
+
 ## 暂时不做
 
 - 后台常驻
