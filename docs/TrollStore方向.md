@@ -30,6 +30,14 @@ TrollStore 的 `fastPathSign` 和 `pwnify` 是 macOS 主机工具，不能在 Li
 
 第一阶段只构建 `_build/TrollStore.tar`。官方源码没有提交 `Victim/InstallerVictim.ipa`，所以 `TrollHelper_iOS15.ipa` 和 `TrollHelper_arm64e.ipa` 不纳入这一轮；它们需要单独准备 victim IPA 后再验证。
 
+现在仓库已经补上 installer 输入接口：
+
+- `build_installers=true` 时启用 installer 构建分支
+- `victim_ipa_url` 用来下载 `Victim/InstallerVictim.ipa`
+- `victim_team_id` 可选；提供后才会额外构建 `TrollHelper_iOS15.ipa`
+
+也就是说，当前边界已经从“不能接 installer 输入”推进到“可以接输入，但还需要真实 victim IPA 做正向验收”。
+
 ## 这一轮踩到的坑
 
 - GitHub `macos-14` runner 自带的是 Bash 3.2，不支持 `shopt -s globstar`

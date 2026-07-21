@@ -8,6 +8,21 @@ on:
         required: true
         default: 2.1.1
         type: string
+      build_installers:
+        description: Also build TrollHelper installer IPAs
+        required: true
+        default: false
+        type: boolean
+      victim_ipa_url:
+        description: Public URL to Victim/InstallerVictim.ipa
+        required: false
+        default: ""
+        type: string
+      victim_team_id:
+        description: Team ID for Victim/make_cert.sh (needed for TrollHelper_iOS15.ipa)
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -52,6 +67,62 @@ jobs:
             "$BUILD_COMMAND" \
             "_build/TrollStore.tar" \
             "$GITHUB_WORKSPACE/artifacts"
+
+      - name: Prepare victim IPA inputs
+        if: ${{ inputs.build_installers }}
+        env:
+          VICTIM_IPA_URL: ${{ inputs.victim_ipa_url }}
+          VICTIM_TEAM_ID: ${{ inputs.victim_team_id }}
+        run: |
+          if [[ -z "$VICTIM_IPA_URL" ]]; then
+            echo "victim_ipa_url is required when build_installers=true" >&2
+            exit 2
+          fi
+
+          bash build-lab/scripts/prepare-trollstore-victim.sh \
+            "$GITHUB_WORKSPACE/target-source" \
+            "$VICTIM_IPA_URL" \
+            "$VICTIM_TEAM_ID"
+
+      - name: Build TrollStore installer IPAs
+        if: ${{ inputs.build_installers }}
+        env:
+          VICTIM_TEAM_ID: ${{ inputs.victim_team_id }}
+        run: |
+          cd "$GITHUB_WORKSPACE/target-source"
+
+          if [[ -n "$VICTIM_TEAM_ID" ]]; then
+            make build_installer15 MAKECMDGOALS=
+          else
+            echo "[info] skip build_installer15 because victim_team_id is empty"
+          fi
+
+          make build_installer64e MAKECMDGOALS=
+
+          mkdir -p "$GITHUB_WORKSPACE/artifacts/_build"
+
+          if [[ -f "_build/TrollHelper_iOS15.ipa" ]]; then
+            cp "_build/TrollHelper_iOS15.ipa" "$GITHUB_WORKSPACE/artifacts/_build/TrollHelper_iOS15.ipa"
+          fi
+
+          if [[ -f "_build/TrollHelper_arm64e.ipa" ]]; then
+            cp "_build/TrollHelper_arm64e.ipa" "$GITHUB_WORKSPACE/artifacts/_build/TrollHelper_arm64e.ipa"
+          fi
+
+          {
+            echo "build_installers=true"
+            echo "victim_ipa_url=${{ inputs.victim_ipa_url }}"
+            if [[ -n "$VICTIM_TEAM_ID" ]]; then
+              echo "trollhelper_ios15=built"
+            else
+              echo "trollhelper_ios15=skipped_missing_team_id"
+            fi
+            if [[ -f "_build/TrollHelper_arm64e.ipa" ]]; then
+              echo "trollhelper_arm64e=built"
+            else
+              echo "trollhelper_arm64e=missing"
+            fi
+          } > "$GITHUB_WORKSPACE/artifacts/trollstore-installer-summary.txt"
 
       - name: Record source revision
         if: always()

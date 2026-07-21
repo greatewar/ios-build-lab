@@ -50,10 +50,22 @@
 
 ### `build-trollstore.yml`
 
-在 GitHub Hosted macOS Runner 上构建 TrollStore 的核心发布包 `TrollStore.tar`。默认固定到 tag `2.1.1`，也可以手动指定其他 branch、tag 或 commit。
+在 GitHub Hosted macOS Runner 上构建 TrollStore。默认固定到 tag `2.1.1`，也可以手动指定其他 branch、tag 或 commit。
+
+默认产物是核心发布包 `TrollStore.tar`。
+
+如果把 `build_installers` 打开，还可以额外尝试构建：
+
+- `_build/TrollHelper_arm64e.ipa`
+- `_build/TrollHelper_iOS15.ipa`
+
+这时需要提供：
+
+- `victim_ipa_url`：一个可公开下载的 `InstallerVictim.ipa`
+- `victim_team_id`：可选；不填时只构建 `TrollHelper_arm64e.ipa`
 
 ## 下一步
 
-1. 跑通 TrollStore 核心发布包构建
+1. 用真实 victim IPA 验证 installer IPA 构建
 2. 固化 TrollStore 的 macOS 依赖
-3. 再准备 installer IPA 所需的 victim 输入
+3. 评估 release / artifact 自动发布
