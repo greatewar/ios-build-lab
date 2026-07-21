@@ -38,13 +38,13 @@ jobs:
       - name: Build TrollStore core package
         env:
           BUILD_COMMAND: >-
-            make pre_build &&
-            make make_fastPathSign &&
-            make make_roothelper &&
-            make make_trollstore &&
-            make make_trollhelper_embedded &&
-            make make_trollhelper_package &&
-            make assemble_trollstore
+            make pre_build MAKECMDGOALS= &&
+            make make_fastPathSign MAKECMDGOALS= &&
+            make make_roothelper MAKECMDGOALS= &&
+            make make_trollstore MAKECMDGOALS= &&
+            make make_trollhelper_embedded MAKECMDGOALS= &&
+            make make_trollhelper_package MAKECMDGOALS= &&
+            make assemble_trollstore MAKECMDGOALS=
         run: |
           bash build-lab/scripts/build-external-theos-project.sh \
             "$GITHUB_WORKSPACE/target-source" \
