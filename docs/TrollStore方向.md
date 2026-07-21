@@ -29,3 +29,9 @@
 TrollStore 的 `fastPathSign` 和 `pwnify` 是 macOS 主机工具，不能在 Linux runner 上原样编译。因此 TrollStore 使用独立的 `macos-14` workflow，但继续复用仓库里的 Theos bootstrap 和统一产物收集脚本。
 
 第一阶段只构建 `_build/TrollStore.tar`。官方源码没有提交 `Victim/InstallerVictim.ipa`，所以 `TrollHelper_iOS15.ipa` 和 `TrollHelper_arm64e.ipa` 不纳入这一轮；它们需要单独准备 victim IPA 后再验证。
+
+## 这一轮踩到的坑
+
+- GitHub `macos-14` runner 自带的是 Bash 3.2，不支持 `shopt -s globstar`
+- 因此通用产物收集脚本不能依赖 `globstar` 展开 `**` 模式
+- 当前做法改成用 Python `glob.glob(..., recursive=True)` 展开 artifact glob，兼容 macOS runner
