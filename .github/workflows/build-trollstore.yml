@@ -1,0 +1,70 @@
+name: build-trollstore
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: TrollStore branch, tag, or commit
+        required: true
+        default: 2.1.1
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build-trollstore:
+    runs-on: macos-14
+    steps:
+      - name: Checkout build lab
+        uses: actions/checkout@v4
+        with:
+          path: build-lab
+
+      - name: Checkout TrollStore
+        uses: actions/checkout@v4
+        with:
+          repository: opa334/TrollStore
+          ref: ${{ inputs.target_ref }}
+          submodules: recursive
+          path: target-source
+
+      - name: Bootstrap Theos
+        run: bash build-lab/scripts/bootstrap-theos.sh
+
+      - name: Prepare TrollStore dependencies
+        run: bash build-lab/scripts/prepare-trollstore-macos.sh
+
+      - name: Build TrollStore core package
+        env:
+          BUILD_COMMAND: >-
+            make pre_build &&
+            make make_fastPathSign &&
+            make make_roothelper &&
+            make make_trollstore &&
+            make make_trollhelper_embedded &&
+            make make_trollhelper_package &&
+            make assemble_trollstore
+        run: |
+          bash build-lab/scripts/build-external-theos-project.sh \
+            "$GITHUB_WORKSPACE/target-source" \
+            "." \
+            "$BUILD_COMMAND" \
+            "_build/TrollStore.tar" \
+            "$GITHUB_WORKSPACE/artifacts"
+
+      - name: Record source revision
+        if: always()
+        run: |
+          mkdir -p artifacts
+          git -C target-source rev-parse HEAD > artifacts/trollstore-source-commit.txt
+          git -C target-source submodule status > artifacts/trollstore-submodules.txt
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trollstore-${{ inputs.target_ref }}-${{ github.run_id }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 14

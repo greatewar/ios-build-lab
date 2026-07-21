@@ -48,8 +48,12 @@
 
 工作流会安装 Theos、构建目标项目，并统一上传构建日志和匹配到的产物。默认参数构建仓库内的 `examples/hello-tool`，用于验证完整链路。
 
+### `build-trollstore.yml`
+
+在 GitHub Hosted macOS Runner 上构建 TrollStore 的核心发布包 `TrollStore.tar`。默认固定到 tag `2.1.1`，也可以手动指定其他 branch、tag 或 commit。
+
 ## 下一步
 
-1. 运行外部项目构建样例
-2. 固化验证结果和依赖
-3. 接入 TrollStore 作为第一个真实目标
+1. 跑通 TrollStore 核心发布包构建
+2. 固化 TrollStore 的 macOS 依赖
+3. 再准备 installer IPA 所需的 victim 输入
