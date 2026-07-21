@@ -38,6 +38,12 @@ TrollStore 的 `fastPathSign` 和 `pwnify` 是 macOS 主机工具，不能在 Li
 
 也就是说，当前边界已经从“不能接 installer 输入”推进到“可以接输入，但还需要真实 victim IPA 做正向验收”。
 
+已做一轮反向验收：
+
+- GitHub Actions Run `29851949839`
+- `build_installers=true` 且 `victim_ipa_url` 留空
+- 结果按预期在 `Prepare victim IPA inputs` 步骤提前失败，并给出明确报错：`victim_ipa_url is required when build_installers=true`
+
 ## 这一轮踩到的坑
 
 - GitHub `macos-14` runner 自带的是 Bash 3.2，不支持 `shopt -s globstar`
