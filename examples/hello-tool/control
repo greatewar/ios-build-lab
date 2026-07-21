@@ -1,0 +1,8 @@
+Package: com.greatewar.ios-build-lab-hello
+Name: ios-build-lab-hello
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Minimal Theos build verification package
+Maintainer: greatewar
+Author: greatewar
+Section: Utilities

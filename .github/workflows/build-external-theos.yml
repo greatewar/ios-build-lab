@@ -1,0 +1,74 @@
+name: build-external-theos
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_repo:
+        description: GitHub repository in owner/name format
+        required: true
+        default: greatewar/ios-build-lab
+        type: string
+      target_ref:
+        description: Branch, tag, or commit to build
+        required: true
+        default: main
+        type: string
+      target_subdir:
+        description: Project directory inside the target repository
+        required: true
+        default: examples/hello-tool
+        type: string
+      build_command:
+        description: Command executed from the project directory
+        required: true
+        default: make clean package FINALPACKAGE=1
+        type: string
+      artifact_glob:
+        description: Relative glob for build artifacts
+        required: true
+        default: packages/*.deb
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout build lab
+        uses: actions/checkout@v4
+        with:
+          path: build-lab
+
+      - name: Checkout target project
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.target_repo }}
+          ref: ${{ inputs.target_ref }}
+          path: target-source
+
+      - name: Bootstrap Theos
+        run: bash build-lab/scripts/bootstrap-theos.sh
+
+      - name: Build target project
+        env:
+          TARGET_SUBDIR: ${{ inputs.target_subdir }}
+          BUILD_COMMAND: ${{ inputs.build_command }}
+          ARTIFACT_GLOB: ${{ inputs.artifact_glob }}
+        run: |
+          bash build-lab/scripts/build-external-theos-project.sh \
+            "$GITHUB_WORKSPACE/target-source" \
+            "$TARGET_SUBDIR" \
+            "$BUILD_COMMAND" \
+            "$ARTIFACT_GLOB" \
+            "$GITHUB_WORKSPACE/artifacts"
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-theos-${{ github.run_id }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 14

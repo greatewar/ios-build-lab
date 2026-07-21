@@ -36,9 +36,20 @@
 - Theos 官方安装链可以跑通
 - 后续接 TrollStore/其他项目时，基础设施不是空白
 
+### `build-external-theos.yml`
+
+手动运行时可指定：
+
+- GitHub 仓库（`owner/name`）
+- branch、tag 或 commit
+- 项目子目录
+- 构建命令
+- 产物 glob
+
+工作流会安装 Theos、构建目标项目，并统一上传构建日志和匹配到的产物。默认参数构建仓库内的 `examples/hello-tool`，用于验证完整链路。
+
 ## 下一步
 
-1. 观察首轮 workflow 结果
-2. 根据日志补齐 Linux 依赖
-3. 增加“构建外部 Theos 项目”的 workflow 输入
-4. 再接入 TrollStore 作为第一个真实目标
+1. 运行外部项目构建样例
+2. 固化验证结果和依赖
+3. 接入 TrollStore 作为第一个真实目标
